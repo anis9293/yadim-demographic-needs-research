@@ -1,0 +1,2 @@
+// Add this inside DatabaseSeeder::run():
+$this->call(DemoDistrictSeeder::class);

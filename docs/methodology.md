@@ -1,55 +1,48 @@
 # Methodology
 
-## 1. Study Objective
+## Objective
 
-To identify community needs using available statistics and convert them into actionable recommendations for religious outreach, charity, and CSR planning.
+Build a practical decision-support system that helps identify where community support should be prioritised and what type of intervention should be delivered.
 
-## 2. Unit of Analysis
+## Core concept: Community Need Index (CNI)
 
-Recommended levels:
+The CNI is a weighted composite score from 0 to 100.
 
-1. State level for early prototype
-2. District level for operational planning
-3. Mukim/locality level if boundary and reliable data are available
+Default indicators:
 
-## 3. Community Need Index
-
-The Community Need Index (CNI) combines multiple indicators into one decision score.
-
-Default weights:
-
-| Indicator | Weight | Rationale |
+| Indicator | Direction | Meaning |
 |---|---:|---|
-| Poverty score | 35% | Direct indicator of aid/CSR urgency |
-| Education gap score | 25% | Proxy for learning and religious exposure need |
-| Youth risk score | 15% | Supports youth dakwah, mentoring, and prevention programmes |
-| Health/social proxy score | 15% | Captures wellbeing and social vulnerability |
-| Access gap score | 10% | Identifies areas needing mobile or physical outreach |
+| Poverty rate | Higher = more need | Financial vulnerability |
+| Low income score | Lower income = more need | Household economic pressure |
+| Youth share | Higher = more need | Youth-focused outreach or development potential |
+| Education gap proxy | Higher = more need | Need for learning, guidance, and exposure |
+| Population density proxy | Higher = more need | Higher service demand |
 
-## 4. Priority Classification
+Default weights can be changed in the Streamlit sidebar.
 
-| CNI Score | Classification |
-|---:|---|
-| 70–100 | High Priority |
-| 45–69.99 | Medium Priority |
-| 0–44.99 | Low Priority |
+## Recommendation logic
 
-## 5. Recommended Action Logic
+The recommendation engine uses transparent rules instead of black-box ML:
 
-The recommendation engine uses transparent rules rather than black-box AI. This is suitable for early policy/CSR planning because it is easy to explain to management and stakeholders.
+- High poverty + low income: food aid, zakat/CSR, livelihood support.
+- Youth-heavy area: youth mentoring, volunteerism, digital dakwah.
+- Education gap: basic Islamic education, tuition, family learning programmes.
+- High CNI: integrated community intervention package.
 
-Example:
+## Map design
 
-- High poverty + low education → food aid, tuition, basic Islamic learning modules
-- High youth risk → youth engagement, mentoring, career exposure, digital dakwah
-- High access gap → mobile outreach unit or periodic ground follow-up
+The map supports:
 
-## 6. Data Ethics
+- zoom in/out
+- drag/pan
+- fullscreen mode
+- minimap
+- layer switching
+- marker clustering
+- measurement ruler
+- draw tools
+- choropleth layer when a valid district GeoJSON is available
 
-Avoid labeling communities negatively. Use the scores to prioritize support, not to stigmatize people or areas.
+## Data quality warning
 
-## 7. Limitations
-
-- Demo data is not official and must be replaced with verified statistics.
-- Mental health may require proxy indicators if direct data is unavailable.
-- District-level data may hide smaller vulnerable pockets.
+For presentation, label demo values clearly as sample data. Use official DOSM/OpenDOSM data for actual planning.

@@ -1,6 +1,11 @@
-pandas>=2.2.0
-numpy>=1.26.0
-streamlit>=1.36.0
-plotly>=5.22.0
-pydeck>=0.9.1
-openpyxl>=3.1.2
+streamlit>=1.35
+pandas>=2.0
+numpy>=1.24
+folium>=0.16
+streamlit-folium>=0.20
+plotly>=5.20
+requests>=2.31
+pyarrow>=14.0
+geopandas>=0.14
+shapely>=2.0
+branca>=0.7
