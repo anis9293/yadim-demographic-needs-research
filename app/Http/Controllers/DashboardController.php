@@ -2,54 +2,66 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CommunityNeedScore;
-use App\Models\District;
-use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
+use App\Services\DosmRealDataImportService;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(DosmRealDataImportService $dosmImporter)
     {
-        $states = District::query()->distinct()->orderBy('state')->pluck('state');
-        return view('dashboard.index', compact('states'));
+        $openDosmStatus = $this->refreshOpenDosmData($dosmImporter);
+        $districts = $this->districtQuery()->get();
+
+        return view('dashboard', compact('districts', 'openDosmStatus'));
     }
 
-    public function geojson(): JsonResponse
+    public function districtData(DosmRealDataImportService $dosmImporter)
     {
-        $scores = CommunityNeedScore::query()
-            ->with('district')
-            ->latest('year')
-            ->get();
+        $this->refreshOpenDosmData($dosmImporter);
 
-        $features = $scores->map(function (CommunityNeedScore $score) {
-            $district = $score->district;
+        return response()->json($this->districtQuery()->get());
+    }
+
+    private function districtQuery()
+    {
+        return DB::table('districts')
+            ->leftJoin('district_demographics', 'districts.id', '=', 'district_demographics.district_id')
+            ->leftJoin('community_need_scores', 'districts.id', '=', 'community_need_scores.district_id')
+            ->select(
+                'districts.id', 'districts.state', 'districts.name', 'districts.latitude', 'districts.longitude',
+                'district_demographics.population_total', 'district_demographics.youth_share',
+                'district_demographics.income_median', 'district_demographics.income_mean',
+                'district_demographics.poverty_rate', 'district_demographics.gini',
+                'district_demographics.population_source_date', 'district_demographics.hies_source_date',
+                'community_need_scores.poverty_score', 'community_need_scores.education_gap_score',
+                'community_need_scores.youth_risk_score', 'community_need_scores.religious_access_gap_score',
+                'community_need_scores.cni_score', 'community_need_scores.method_version'
+            )
+            ->orderByDesc('community_need_scores.cni_score');
+    }
+
+    private function refreshOpenDosmData(DosmRealDataImportService $dosmImporter): array
+    {
+        if (app()->environment('testing')) {
+            return [
+                'ok' => true,
+                'skipped' => true,
+            ];
+        }
+
+        try {
+            return [
+                'ok' => true,
+                'result' => $dosmImporter->import(),
+            ];
+        } catch (Throwable $exception) {
+            report($exception);
 
             return [
-                'type' => 'Feature',
-                'geometry' => $district->geometry_geojson ?: [
-                    'type' => 'Point',
-                    'coordinates' => [(float) $district->longitude, (float) $district->latitude],
-                ],
-                'properties' => [
-                    'district_id' => $district->id,
-                    'district' => $district->name,
-                    'state' => $district->state,
-                    'year' => $score->year,
-                    'cni_score' => (float) $score->cni_score,
-                    'priority_level' => $score->priority_level,
-                    'recommended_actions' => $score->recommended_actions ?? [],
-                    'poverty_score' => (float) $score->poverty_score,
-                    'education_score' => (float) $score->education_score,
-                    'youth_risk_score' => (float) $score->youth_risk_score,
-                    'religious_access_score' => (float) $score->religious_access_score,
-                ],
+                'ok' => false,
+                'error' => $exception->getMessage(),
             ];
-        });
-
-        return response()->json([
-            'type' => 'FeatureCollection',
-            'features' => $features,
-        ]);
+        }
     }
 }

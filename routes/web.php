@@ -3,5 +3,6 @@
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
-Route::get('/api/community-need-geojson', [DashboardController::class, 'geojson'])->name('dashboard.geojson');
+Route::get('/', fn () => redirect('/dashboard'));
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/api/district-cni', [DashboardController::class, 'districtData'])->name('api.district-cni');
