@@ -1,59 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# YADIM Demographic Needs Research
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A data-driven foundation for mapping community needs and recommending targeted dakwah, charity, and CSR interventions in Malaysia.
 
-## About Laravel
+## Purpose
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This project converts demographic and socio-economic statistics into a visual decision-support app. It helps identify **where support is most needed**, **what type of support is suitable**, and **how NGOs/CSR teams can prioritize outreach**.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Core focus areas:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Poverty and household vulnerability
+- Education and religious exposure gap
+- Youth/community risk indicators
+- Access to support services
+- CSR, charity, dakwah, and muallaf-support planning
 
-## Learning Laravel
+## Key Output
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+The main output is a **Community Need Index (CNI)**:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```text
+CNI = weighted score combining poverty, education gap, youth vulnerability, health/social proxy, and service access gap
+```
 
-## Laravel Sponsors
+Each district/community is classified as:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- High Priority
+- Medium Priority
+- Low Priority
 
-### Premium Partners
+The app then recommends suitable interventions such as food aid, education support, spiritual counselling, youth programmes, muallaf follow-up, or community harmony initiatives.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Suggested Data Source
 
-## Contributing
+Primary statistical source: DOSM Open Data Catalogue  
+<https://open.dosm.gov.my/data-catalogue>
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Suggested dataset categories:
 
-## Code of Conduct
+1. Population by district/state
+2. Household income and poverty
+3. Education attainment
+4. Labour force and youth unemployment
+5. Health, wellbeing, or social indicators
+6. ICT/internet access
+7. Administrative boundary files for mapping
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Project Structure
 
-## Security Vulnerabilities
+```text
+.
+├── app/
+│   └── streamlit_app.py
+├── data/
+│   ├── raw/
+│   └── processed/
+├── docs/
+│   ├── data_dictionary.md
+│   └── methodology.md
+├── notebooks/
+│   └── 01_demo_cni_workflow.ipynb
+├── outputs/
+│   ├── maps/
+│   └── reports/
+├── src/
+│   ├── cni_model.py
+│   ├── data_loader.py
+│   ├── demo_data.py
+│   └── recommendation_engine.py
+├── requirements.txt
+└── run_app.sh
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Quick Start
 
-## License
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+streamlit run app/streamlit_app.py
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Current Status
+
+This version includes a working demo dataset so the dashboard can run immediately. Replace the demo data with cleaned DOSM datasets once available.
+
+## App Features
+
+- District-level CNI ranking
+- Priority classification
+- Interactive map
+- Recommended intervention package
+- CSV download for planning/reporting
+
+## Roadmap
+
+- Import real DOSM datasets
+- Add district/mukim boundary GeoJSON
+- Add state and district filters
+- Add YADIM programme alignment tags
+- Add reporting export in PDF/PowerPoint format
